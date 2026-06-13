@@ -43,6 +43,12 @@ int main(){
     deviceFunctions devices(motor_link); 
     Motor mks(motor_link);
 
+    //takes input for how long to run start scan
+    uint timer{0}; 
+    std::cout << "Duration to run start scan in milliseconds:" << "\n"; 
+    std::cin >> timer; 
+    std::cout << "\n"; 
+
     mks.open(); 
     c1.open(); 
     setRaw(motor.devNode, lidar.devNode);
@@ -57,15 +63,15 @@ int main(){
 
 //mks.start(); 
 c1.start();
-std::this_thread::sleep_for(500ms);
+std::this_thread::sleep_for(500ms); //delay for lidar to start 
 
-c1.parseHex(0xA5, 0x5A); //parses hex formatted for start_scan
+//uint timer = 10000; //Or hardcode how long to run the start_scan
+c1.parseHex(0xA5, 0x5A, timer);
     
 //mks.stop(); 
 c1.stop(); 
 std::cout << "\n" << "Try satisfied with no catch, closing serial port." << std::endl;
 mks.close(); 
 c1.close();
-
 }
 
