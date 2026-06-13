@@ -35,7 +35,7 @@ void identifyUSBDevices() {
         if(serialnum == "Silicon_Labs_CP2102N_USB_to_UART_Bridge_Controller_405341f8295df011b26358401045c30f"){
             //here you would have identified which device ( /dev/ttyUSB0 or /dev/ttyUSB1 for example) is the lidar or motor, then you'd attach that to the respective baudrate and serial port 
             lidar.serial = serialnum; 
-            lidar.devNode = devType;  //"/dev/ttyUSB*"
+            lidar.devNode = devType;  //"/dev/ttyUSB*..."
             lidar.baud_rate = 460800; //not technically even needed 
             std::cout << " **Lidar recognized** " <<"\n" << " Serial number: " << lidar.serial << "\n" << " Serial port: " << lidar.devNode << "\n" << " **END LIDAR** " << "\n"; 
         }
