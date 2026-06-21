@@ -36,11 +36,12 @@ It is strongly recommended that you follow these guides:
 
 #### 2. Power and connection
 
-Connect the MKS Servo42C to an external 12V power supply (minimum 12V required).
+* Connect the MKS Servo42C to an external 12V power supply (minimum 12V required)
+* Attach the Slamtec Rplidar C1 via the physical USB 2.0 port. 
 
 ---
 
-#### 3. Identify serial device
+#### 3. Identify serial device (For reference)
 
 In your terminal:
 
@@ -48,26 +49,18 @@ In your terminal:
 ls /dev/ttyUSB*
 ```
 
-This will show which USB device the motor is attached to.
+This will show which USB device both the lidar and motor is attached to.
 
 ---
 
-#### 4. (Optional but recommended) fix serial mode
-
-You can set the port to raw mode to ensure consistent communication:
-
-```bash
-stty -F /dev/ttyUSB0 38400 raw -echo
-```
-
----
-
-#### 5. Build and run
+#### 4. Build and run
 
 Compile:
 
 ```bash
-g++ main.cpp identifyDevices.cpp -o main -ludev -lserial
+g++ main.cpp identifyDevices.cpp commandLink.cpp mks.cpp rplidar.cpp tools.cpp -o main -ludev -lserial
+
+
 ```
 
 Run:
@@ -76,11 +69,11 @@ Run:
 ./main
 ```
 
-This will execute a simple calibration, start, and stop sequence.
+This will currently compile the main file with all driver files, prompt you to enter a duration to turn the lidar on for, begin spinning the lidar and outputting real-time angle and distance data from the C1 to the terminal.
 
 You can modify the commands, add inputs via `std::cin`, or expand control logic as needed.
 
-Future work includes integration with the RPLidar C1 and synchronization between rotation and scanning.
+Future work includes integration with the RPLidar C1 and synchronization between rotation and scanning via the MKS Servo42C.
 
 ---
 
