@@ -46,6 +46,54 @@ void CommandLink::closePort() {
     std::cout << "Closing Serial Port: " << port << "\n";
 }
 
+std::vector<uint8_t> CommandLink::returnVectorHex(uint8_t responseSize){
+    std::vector<uint8_t> commandBuffer;
+    char commandByte;
+    
+    while (commandBuffer.empty() || commandBuffer.size() != responseSize){
+        serialDevice.ReadByte(commandByte);
+        commandBuffer.push_back(static_cast<uint8_t>(commandByte));}
+
+    return commandBuffer;}
+
+//MKS Servo42C Parser
+std::vector<uint8_t> CommandLink::parseMKShex(int8_t responseSize, uint8_t alignByte) {
+    std::vector<uint8_t> commandBuffer;
+    char commandByte;
+
+    while (commandBuffer.empty() || commandBuffer.size() != responseSize) {
+        uint8_t rCHK{0};
+        serialDevice.ReadByte(commandByte);
+        commandBuffer.push_back(static_cast<uint8_t>(commandByte));
+        if (commandBuffer.front() == alignByte) {
+            commandBuffer.clear();
+            commandBuffer.push_back(alignByte);
+            for (int k = 0; k < responseSize - 1; k++) {
+                serialDevice.ReadByte(commandByte);
+                commandBuffer.push_back(static_cast<uint8_t>(commandByte));}
+            for (int j = 0; j < responseSize - 1; j++) {
+                rCHK = rCHK + commandBuffer[j];}
+            rCHK = (rCHK % 256) & 0xFF;
+
+            if (commandBuffer[responseSize - 1] == rCHK) {
+                std::cout << "Checksum success. Buffer verified. " << "\n";
+                std::cout << " Angle buffer vector indices: " << std::hex 
+                          << (int)commandBuffer[0] << " " 
+                          << (int)commandBuffer[1] << " " 
+                          << (int)commandBuffer[2] << " " 
+                          << (int)commandBuffer[3] << " " 
+                          << (int)commandBuffer[4] << " " 
+                          << (int)commandBuffer[5] << "\n";
+                break;} 
+            else {
+                std::cout << "Checksum failed. Trying again." << "\n";
+                commandBuffer.clear();
+            }} 
+        else {
+            commandBuffer.clear();}}
+    return commandBuffer; 
+}
+
 deviceFunctions::deviceFunctions(CommandLink& l)
     : link(l) {}
 
@@ -64,3 +112,4 @@ void deviceFunctions::open() {
 void deviceFunctions::close() {
     link.closePort();
 }
+

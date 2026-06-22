@@ -23,6 +23,8 @@ public:
     int readCommand(uint8_t checkSum);
     void openPort();
     void closePort();
+    std::vector<uint8_t> returnVectorHex(uint8_t checkSum2); 
+    std::vector<uint8_t> parseMKShex(int8_t responseSize, uint8_t alignByte); 
 };
 
 class deviceFunctions {
